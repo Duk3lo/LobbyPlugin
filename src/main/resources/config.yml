@@ -1,0 +1,22 @@
+fly:
+  speed: 2.0
+  allowed-players:
+
+interaction:
+  options:
+    break_blocks: true
+    add_blocks: true
+    open_doors: false
+    open_trapdoors: false
+    open_fence_gates: false
+    use_buttons: false
+    use_levers: false
+    interact_item_frames: true
+  allowed-players:
+
+limits:
+  chunk:
+    enabled: true
+    view-radius: 2
+    max-up: 160
+    max-down: 32
