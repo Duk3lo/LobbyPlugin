@@ -94,7 +94,7 @@ public final class Commands implements CommandExecutor , TabCompleter {
 
             if (strings.length >= 2) {
                 String targetName = strings.length >= 3 ? strings[2] : player.getName();
-                Player target = Bukkit.getPlayerExact(targetName); // para aplicar efectos si está conectado
+                Player target = Bukkit.getPlayerExact(targetName);
 
                 if (strings[0].equals(allow_fly)) {
                     if (strings[1].equals(add)) {
