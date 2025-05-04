@@ -52,6 +52,10 @@ public final class Commands implements CommandExecutor , TabCompleter {
                     return true;
                 }
                 case interaction -> {
+                    if (!player.hasPermission("LobbyPlugin.reload")) {
+                        player.sendMessage("§cNo tienes permiso para usar este comando.");
+                        return true;
+                    }
                     if (strings.length >= 2) {
                         if (strings[1].equals(set_options)) {
                             if (strings.length >= 3) {
@@ -93,6 +97,10 @@ public final class Commands implements CommandExecutor , TabCompleter {
             }
 
             if (strings.length >= 2) {
+                if (!player.hasPermission("LobbyPlugin.reload")) {
+                    player.sendMessage("§cNo tienes permiso para usar este comando.");
+                    return true;
+                }
                 String targetName = strings.length >= 3 ? strings[2] : player.getName();
                 Player target = Bukkit.getPlayerExact(targetName);
 
