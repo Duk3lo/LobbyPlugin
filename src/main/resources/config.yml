@@ -1,8 +1,17 @@
+join:
+  fly_in_creative:
+    enable: true
+  walk_speed: 0.2
+  slot_player: 0
+
 fly:
-  speed: 2.0
-  allowed-players:
+  speed: 0.2
+  list_of_ignore_permissions_player:
 
 interaction:
+  interact_in_creative:
+    enable: true
+
   options:
     break_blocks: true
     add_blocks: true
@@ -12,7 +21,7 @@ interaction:
     use_buttons: false
     use_levers: false
     interact_item_frames: true
-  allowed-players:
+  list_of_ignore_permissions_player:
 
 limits:
   chunk:

@@ -110,7 +110,7 @@ public final class Commands implements CommandExecutor , TabCompleter {
                             player.sendMessage("§cEl jugador §e" + targetName + " §ya puede volar.");
                         } else {
                             Configuration.addAllowedFlyPlayer(targetName);
-                            if (target != null) Actions.playerFly(target);
+                            if (target != null) Actions.playerConfigureFly(target);
                             player.sendMessage("§aEl jugador §e" + targetName + " §aahora puede volar.");
                         }
                         return true;
@@ -119,7 +119,7 @@ public final class Commands implements CommandExecutor , TabCompleter {
                             player.sendMessage("§cEl jugador §e" + targetName + " §cno tiene permiso de vuelo.");
                         } else {
                             Configuration.removeAllowedFlyPlayer(targetName);
-                            if (target != null) Actions.playerFly(target);
+                            if (target != null) Actions.playerConfigureFly(target);
                             player.sendMessage("§cEl jugador §e" + targetName + " §cya no puede volar.");
                         }
                         return true;

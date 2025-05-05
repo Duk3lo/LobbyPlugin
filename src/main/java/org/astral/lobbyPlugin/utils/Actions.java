@@ -3,6 +3,7 @@ package org.astral.lobbyPlugin.utils;
 import org.astral.lobbyPlugin.LobbyPlugin;
 import org.astral.lobbyPlugin.config.Configuration;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -19,8 +20,8 @@ public final class Actions {
 
     public static void onJoinPlayer(final @NotNull Player player) {
         // Init
-        player.setWalkSpeed(0.2f);
-        player.getInventory().setHeldItemSlot(0);
+        player.getInventory().setHeldItemSlot(Configuration.getSlotJoin());
+        playerConfigureSpeed(player);
 
         //Spawn difference
         final Location baseSpawn = player.getWorld().getSpawnLocation();
@@ -32,11 +33,14 @@ public final class Actions {
         player.teleportAsync(spawnLocation);
     }
 
-    public static void playerFly(final @NotNull Player player){
-        if (player.hasPermission("LobbyPlugin.fly") || Configuration.isPlayerFlyAllowed(player.getName())) {
+    public static void playerConfigureSpeed(final @NotNull Player player){
+        player.setWalkSpeed(Configuration.getSpeedWalkPlayers());
+    }
+
+    public static void playerConfigureFly(final @NotNull Player player){
+        if (canFly(player)) {
             player.setAllowFlight(true);
             player.setFlying(true);
-            System.out.println(Configuration.speedFly());
             player.setFlySpeed(Configuration.speedFly());
         }else {
             player.setAllowFlight(false);
@@ -70,6 +74,14 @@ public final class Actions {
     public static void exitLobby(final @NotNull Player player){
         final UUID uuid = player.getUniqueId();
         blind.remove(uuid);
+    }
+
+    public static boolean canFly(final @NotNull Player player){
+        boolean hasPermission = player.hasPermission("LobbyPlugin.fly");
+        boolean isAllowed = Configuration.isPlayerInteractionAllowed(player.getName());
+        boolean canFlyCreative = Configuration.canFlyInCreative();
+        boolean isInCreative = player.getGameMode() == GameMode.CREATIVE;
+        return hasPermission || isAllowed || (canFlyCreative && isInCreative);
     }
 
 }

@@ -2,6 +2,8 @@ package org.astral.lobbyPlugin.config;
 
 import org.astral.lobbyPlugin.LobbyPlugin;
 import org.astral.lobbyPlugin.handler.LimitsListener;
+import org.astral.lobbyPlugin.utils.Actions;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -20,11 +22,14 @@ public final class Configuration {
 
     private final static LimitsListener LIMITS_LISTENER = new LimitsListener();
 
+    private final static String keyJoin = "join";
     private final static String keyFly = "fly";
-
     private final static String keyInteraction = "interaction";
     private final static String keyInteractOption = "interaction.options";
     private final static String keyChunkSpawn = "limits.chunk";
+
+    // SubKey
+    private final static String keyPermissions = ".list_of_ignore_permissions_player";
 
     private static boolean isLimitsHandler = false;
 
@@ -49,6 +54,13 @@ public final class Configuration {
     public static void updatePlugin(){
         plugin.reloadConfig();
         config = plugin.getConfig();
+
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            Actions.playerConfigureSpeed(player);
+            Actions.playerConfigureFly(player);
+        });
+
+        config = plugin.getConfig();
         if (Configuration.isChunkLimitsEnabled() && !isLimitsHandler) {
             plugin.getServer().getPluginManager().registerEvents(LIMITS_LISTENER, plugin);
             isLimitsHandler = true;
@@ -58,17 +70,36 @@ public final class Configuration {
         }
     }
 
+    //-------------------------Join
+    public static float getSpeedWalkPlayers(){
+        float speed = (float) config.getDouble(keyJoin + ".walk_speed", 0.2);
+        return Math.max(-1.0f, Math.min(1.0f, speed));
+    }
+
+    public static byte getSlotJoin(){
+        return (byte) config.getInt(keyJoin+".slot_player",0);
+    }
+
     //-------------------------FLY
 
+    public static boolean canFlyInCreative(){
+        return config.getBoolean(keyInteraction + ".fly_in_creative.enable", true);
+    }
+
+    public static float speedFly() {
+        float speed = (float) config.getDouble(keyFly + ".speed", 0.2f);
+        return Math.max(-1.0f, Math.min(1.0f, speed));
+    }
+
     public static @NotNull List<String> getAllowedFlyPlayers(){
-        return config.getStringList(keyFly + ".allowed-players");
+        return config.getStringList(keyFly + keyPermissions);
     }
 
     public static void addAllowedFlyPlayer(final String name) {
         List<String> list = getAllowedFlyPlayers();
         if (!list.contains(name)) {
             list.add(name);
-            config.set(keyFly + ".allowed-players", list);
+            config.set(keyFly + keyPermissions, list);
             plugin.saveConfig();
             plugin.reloadConfig();
             config = plugin.getConfig();
@@ -79,7 +110,7 @@ public final class Configuration {
         List<String> list = getAllowedFlyPlayers();
         if (list.contains(name)) {
             list.remove(name);
-            config.set(keyFly + ".allowed-players", list);
+            config.set(keyFly + keyPermissions, list);
             plugin.saveConfig();
             plugin.reloadConfig();
             config = plugin.getConfig();
@@ -89,22 +120,22 @@ public final class Configuration {
     public static boolean isPlayerFlyAllowed(final String name) {
         return getAllowedFlyPlayers().contains(name);
     }
-
-    public static float speedFly() {
-        return (float) config.getDouble(keyFly + ".speed", 0.2f);
+    //-------------------------INTERACTION
+    public static boolean canInteractCreative(){
+        return config.getBoolean(keyInteraction + ".interact_in_creative.enable", true);
     }
 
     //-------------------------INTERACTION ALLOWED INTERACTION
 
     public static @NotNull List<String> getAllowedInteractionPlayers() {
-        return config.getStringList(keyInteraction + ".allowed-players");
+        return config.getStringList(keyInteraction + keyPermissions);
     }
 
     public static void addAllowedInteractionPlayer(final String name) {
         List<String> list = getAllowedInteractionPlayers();
         if (!list.contains(name)) {
             list.add(name);
-            config.set(keyInteraction + ".allowed-players", list);
+            config.set(keyInteraction + keyPermissions, list);
             plugin.saveConfig();
             plugin.reloadConfig();
             config = plugin.getConfig();
@@ -115,7 +146,7 @@ public final class Configuration {
         List<String> list = getAllowedInteractionPlayers();
         if (list.contains(name)) {
             list.remove(name);
-            config.set(keyInteraction + ".allowed-players", list);
+            config.set(keyInteraction + keyPermissions, list);
             plugin.saveConfig();
             plugin.reloadConfig();
             config = plugin.getConfig();
